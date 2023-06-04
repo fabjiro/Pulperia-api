@@ -8,7 +8,7 @@ export class ImageController {
 
   @Post()
   create(@Body() createImageDto: CreateImageDto) {
-    return this.imageService.create(createImageDto);
+    return this.imageService.create('Root', createImageDto);
   }
 
   @Get()

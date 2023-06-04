@@ -7,7 +7,7 @@ import { basename, extname } from 'path';
 export class DropboxService {
   private readonly dbx: Dropbox;
   constructor() {
-    this.dbx = new Dropbox({ accessToken: process.env.DROPBOX_TOKEN });
+    this.dbx = new Dropbox({ accessToken: process.env.DB_TOKEN });
   }
 
   async Upload(pathLocal: string, pathCloud: string) {

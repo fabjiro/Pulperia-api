@@ -7,6 +7,7 @@ import { Image } from './image/entities/image.entity';
 import { DropboxService } from './service/dropbox/dropbox.service';
 import { SecurityService } from './service/security/security.service';
 import { ConfigModule } from '@nestjs/config';
+import { SecurityModule } from './service/security/security.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -27,6 +28,7 @@ console.log(ENV);
       synchronize: true,
     }),
     ImageModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [AppService, DropboxService, SecurityService],
