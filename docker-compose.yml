@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    container_name: pulperia_api
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - pulperia_db
+
+  pulperia_db:
+    image: postgres
+    container_name: pulperia_db
+    environment:
+      POSTGRES_PASSWORD: ${DEFAULT_PASSWORD}
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pulperia_pgadmi
+    environment:
+      PGADMIN_DEFAULT_EMAIL: fjiron2001@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: ${DEFAULT_PASSWORD}
+    ports:
+      - 8080:80
+    depends_on:
+      - pulperia_db
