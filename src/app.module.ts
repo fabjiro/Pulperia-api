@@ -8,6 +8,8 @@ import { DropboxService } from './service/dropbox/dropbox.service';
 import { SecurityService } from './service/security/security.service';
 import { ConfigModule } from '@nestjs/config';
 import { SecurityModule } from './service/security/security.module';
+import { StateModule } from './state/state.module';
+import { State } from './state/entities/state.entity';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -24,11 +26,12 @@ console.log(ENV);
       username: process.env.PG_USERNAME || 'postgres',
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASENAME,
-      entities: [Image],
+      entities: [Image, State],
       synchronize: true,
     }),
     ImageModule,
     SecurityModule,
+    StateModule,
   ],
   controllers: [AppController],
   providers: [AppService, DropboxService, SecurityService],
