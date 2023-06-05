@@ -12,6 +12,8 @@ import { StateModule } from './state/state.module';
 import { State } from './state/entities/state.entity';
 import { ProductModule } from './product/product.module';
 import { Product } from './product/entities/product.entity';
+import { RolModule } from './rol/rol.module';
+import { Rol } from './rol/entities/rol.entity';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -28,13 +30,14 @@ console.log(ENV);
       username: process.env.PG_USERNAME || 'postgres',
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASENAME,
-      entities: [Image, State, Product],
+      entities: [Image, State, Product, Rol],
       synchronize: true,
     }),
     ImageModule,
     SecurityModule,
     StateModule,
     ProductModule,
+    RolModule,
   ],
   controllers: [AppController],
   providers: [AppService, DropboxService, SecurityService],
