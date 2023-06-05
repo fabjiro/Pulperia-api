@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { State } from '../../state/entities/state.entity';
 
 @Entity()
 export class Image {

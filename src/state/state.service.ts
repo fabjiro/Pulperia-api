@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateStateDto, UpdateStateDto } from './state.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { State } from './entities/state.entity';
@@ -17,10 +17,16 @@ export class StateService {
     return this.stateRepository.find();
   }
 
-  findOne(id: number) {
-    return this.stateRepository.findOneBy({
+  async findOne(id: number) {
+    const state = await this.stateRepository.findOneBy({
       id: id,
     });
+
+    if (!state) {
+      throw new HttpException('Estado no disponible', 404);
+    }
+
+    return state;
   }
 
   update(id: number, updateStateDto: UpdateStateDto) {
