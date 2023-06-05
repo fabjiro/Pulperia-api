@@ -22,7 +22,7 @@ export class RolService {
       id,
     });
 
-    if (rol) {
+    if (!rol) {
       throw new HttpException('Rol no disponible', 404);
     }
 
