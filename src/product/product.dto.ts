@@ -13,6 +13,10 @@ export class CreateProductDto {
   @IsString()
   name: string;
 
+  @IsNotEmpty()
+  @IsNumber()
+  categorie: number;
+
   @ValidateNested()
   @Type(() => CreateImageDto)
   picture: CreateImageDto;
@@ -25,6 +29,10 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   name?: string;
+
+  @IsOptional()
+  @IsNumber()
+  categorie?: number;
 
   @IsOptional()
   @ValidateNested()

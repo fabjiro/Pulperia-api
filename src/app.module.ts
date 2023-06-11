@@ -17,6 +17,8 @@ import { Rol } from './rol/entities/rol.entity';
 import { ProfileModule } from './profile/profile.module';
 import { Profile } from './profile/entities/profile.entity';
 import { AuthModule } from './auth/auth.module';
+import { CategorieModule } from './categorie/categorie.module';
+import { Categorie } from './categorie/entities/categorie.entity';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -33,7 +35,7 @@ console.log(ENV);
       username: process.env.PG_USERNAME || 'postgres',
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASENAME,
-      entities: [Image, State, Product, Rol, Profile],
+      entities: [Image, State, Product, Rol, Profile, Categorie],
       synchronize: true,
     }),
     RolModule,
@@ -43,6 +45,7 @@ console.log(ENV);
     SecurityModule,
     AuthModule,
     ProductModule,
+    CategorieModule,
   ],
   controllers: [AppController],
   providers: [AppService, DropboxService, SecurityService],

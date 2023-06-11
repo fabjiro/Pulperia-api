@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { State } from '../../state/entities/state.entity';
 import { Image } from '../../image/entities/image.entity';
+import { Categorie } from '../../categorie/entities/categorie.entity';
 
 @Entity()
 export class Product {
@@ -34,4 +35,11 @@ export class Product {
     eager: true,
   })
   state: State;
+
+  @ManyToOne(() => Categorie, (categorie) => categorie.products, {
+    nullable: false,
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  categorie: Categorie;
 }
