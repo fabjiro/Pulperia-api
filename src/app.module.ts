@@ -16,6 +16,7 @@ import { RolModule } from './rol/rol.module';
 import { Rol } from './rol/entities/rol.entity';
 import { ProfileModule } from './profile/profile.module';
 import { Profile } from './profile/entities/profile.entity';
+import { AuthModule } from './auth/auth.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -35,12 +36,13 @@ console.log(ENV);
       entities: [Image, State, Product, Rol, Profile],
       synchronize: true,
     }),
-    ImageModule,
-    SecurityModule,
-    StateModule,
-    ProductModule,
     RolModule,
+    ImageModule,
+    StateModule,
     ProfileModule,
+    SecurityModule,
+    AuthModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService, DropboxService, SecurityService],

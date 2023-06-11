@@ -11,10 +11,10 @@ import { SecurityService } from '../service/security/security.service';
 
 @Module({
   imports: [
-    RolModule,
-    ImageModule,
     StateModule,
+    RolModule,
     SecurityModule,
+    ImageModule,
     TypeOrmModule.forFeature([Profile]),
   ],
   controllers: [ProfileController],
