@@ -1,10 +1,16 @@
-import { HttpException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { StateService } from '../state/state.service';
 import { ImageService } from '../image/image.service';
+import { CategorieService } from '../categorie/categorie.service';
 
 @Injectable()
 export class ProductService {
@@ -17,22 +23,41 @@ export class ProductService {
   @Inject()
   private imageService: ImageService;
 
+  @Inject()
+  private categorieService: CategorieService;
+
   async create(createProductDto: CreateProductDto) {
+    const state = await this.stateService.findOne(createProductDto.state || 1);
+    const categorie = await this.categorieService.findOne(
+      createProductDto.categorie,
+    );
+    if (!state) {
+      throw new HttpException('Estado no disponible', 404);
+    }
+    if (!categorie) {
+      throw new HttpException('Categoria no disponible', 404);
+    }
+
+    const nameExist = await this.productRepository.exist({
+      where: {
+        name: createProductDto.name,
+      },
+    });
+
+    if (nameExist) {
+      throw new ConflictException('Nombre de producto en uso');
+    }
+
     const uploadedImage = await this.imageService.create(
       'Product',
       createProductDto.picture,
     );
-    const state = await this.stateService.findOne(createProductDto.state || 1);
 
-    if (!state) {
-      await this.imageService.remove(uploadedImage.id);
-      throw new HttpException('Estado no disponible', 404);
-    }
-
-    return this.productRepository.save({
+    return await this.productRepository.save({
       image: uploadedImage,
       name: createProductDto.name,
       state: state,
+      categorie: categorie,
     });
   }
 

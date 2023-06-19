@@ -6,12 +6,14 @@ import { Product } from './entities/product.entity';
 import { StateModule } from '../state/state.module';
 import { ImageModule } from '../image/image.module';
 import { ProfileModule } from '../profile/profile.module';
+import { CategorieModule } from '../categorie/categorie.module';
 
 @Module({
   imports: [
     StateModule,
     ImageModule,
     ProfileModule,
+    CategorieModule,
     TypeOrmModule.forFeature([Product]),
   ],
   controllers: [ProductController],

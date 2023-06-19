@@ -22,26 +22,33 @@ export class ImageService {
     let _image = image;
     const fileName = `${v4()}.png`;
 
-    if (!compresed) {
-      _image = await this.optimizeImage(image, 20);
+    try {
+      if (!compresed) {
+        _image = await this.optimizeImage(image, 20);
+      }
+
+      const pathLocal = this.fileSystemService.convertBase64ToFile(
+        image,
+        fileName,
+      );
+
+      const dataUploaded = await this.dropboxService.Upload(
+        pathLocal,
+        `/${process.env.DB_BASE_IMAGE}/${folder}/${fileName}`,
+      );
+
+      this.fileSystemService.deleteFile(pathLocal);
+
+      return await this.imageRepository.save({
+        url: dataUploaded.link,
+        pathRemote: dataUploaded.path,
+      });
+    } catch (error) {
+      throw new HttpException(
+        'Hemos tenido problemas procesando la imagen',
+        404,
+      );
     }
-
-    const pathLocal = this.fileSystemService.convertBase64ToFile(
-      image,
-      fileName,
-    );
-
-    const dataUploaded = await this.dropboxService.Upload(
-      pathLocal,
-      `/${process.env.DB_BASE_IMAGE}/${folder}/${fileName}`,
-    );
-
-    this.fileSystemService.deleteFile(pathLocal);
-
-    return this.imageRepository.save({
-      url: dataUploaded.link,
-      pathRemote: dataUploaded.path,
-    });
   }
 
   findAll() {
