@@ -45,13 +45,16 @@ export class AuthService {
       },
     );
 
+    const refetchProfile = await this.profileRepository.findOne({
+      select: ['email', 'id', 'image', 'name', 'rol', 'state', 'trust'],
+      where: {
+        id: profile.id,
+      },
+    });
+
     return {
-      profile: await this.profileRepository.findOne({
-        select: ['email', 'id', 'image', 'name', 'rol', 'state', 'trust'],
-        where: {
-          id: profile.id,
-        },
-      }),
+      profile: refetchProfile,
+      isAdmin: refetchProfile.rol.id === 1,
       sessionToken,
       refreshToken,
     };
@@ -113,12 +116,17 @@ export class AuthService {
   }
 
   async me(idProfile: number) {
-    return this.profileRepository.findOne({
+    const profile = await this.profileRepository.findOne({
       select: ['email', 'id', 'image', 'name', 'rol', 'state', 'trust'],
       where: {
         id: idProfile,
       },
     });
+
+    return {
+      ...profile,
+      isAdmin: profile.state.id === 1,
+    };
   }
 
   async validateProfile(idProfile: number) {

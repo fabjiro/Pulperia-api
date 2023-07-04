@@ -68,16 +68,19 @@ export class CategorieService {
   async update(id: number, updateCategorieDto: UpdateCategorieDto) {
     await this.findOne(id);
     if (updateCategorieDto.state) {
-      const state = await this.stateService.findOne(
-        updateCategorieDto.state ?? 1,
-      );
-      return this.categorieRepository.update(id, {
+      const state = await this.stateService.findOne(updateCategorieDto.state);
+      await this.categorieRepository.update(id, {
         state,
       });
     }
-    return this.categorieRepository.update(id, {
-      name: updateCategorieDto.name,
-    });
+
+    if (updateCategorieDto.name) {
+      await this.categorieRepository.update(id, {
+        name: updateCategorieDto.name,
+      });
+    }
+
+    return this.findOne(id);
   }
 
   async remove(id: number) {

@@ -3,11 +3,16 @@ import {
   HttpException,
   Inject,
   Injectable,
+  Query,
 } from '@nestjs/common';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
+import {
+  CreateProductDto,
+  FindProductFilterDto,
+  UpdateProductDto,
+} from './product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { StateService } from '../state/state.service';
 import { ImageService } from '../image/image.service';
 import { CategorieService } from '../categorie/categorie.service';
@@ -61,18 +66,51 @@ export class ProductService {
     });
   }
 
-  findAll() {
+  async findAll(@Query() filter?: FindProductFilterDto) {
+    if (filter) {
+      const { name, 'categorie.id': CategorieId, 'state.id': StateId } = filter;
+      const where: any = {};
+      try {
+        if (name) {
+          where.name = ILike(`%${name.toLocaleLowerCase()}%`);
+        }
+        if (CategorieId) {
+          where.categorie = {
+            id: CategorieId,
+          };
+        }
+        if (StateId) {
+          where.state = {
+            id: StateId,
+          };
+        }
+
+        const products = await this.productRepository.find({
+          where: where,
+        });
+        return products;
+      } catch (error) {
+        throw new HttpException(
+          'Hemos tenido problemas al procesar su peticion',
+          500,
+        );
+      }
+    }
     return this.productRepository.find();
   }
 
-  findOne(id: number) {
-    return this.productRepository.findOneBy({
+  async findOne(id: number) {
+    const product = await this.productRepository.findOneBy({
       id: id,
     });
+    if (!product) {
+      throw new HttpException('Producto no disponible', 404);
+    }
+    return product;
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
-    const { name, picture, state } = updateProductDto;
+    const { name, picture, state, categorie } = updateProductDto;
     const product = await this.productRepository.findOneBy({
       id,
     });
@@ -88,7 +126,11 @@ export class ProductService {
     }
 
     if (picture) {
-      const uploadedImage = await this.imageService.create('Product', picture);
+      const uploadedImage = await this.imageService.Update(
+        'Product',
+        product.image.id,
+        picture,
+      );
       await this.productRepository.update(id, {
         image: uploadedImage,
       });
@@ -101,9 +143,14 @@ export class ProductService {
       });
     }
 
-    return this.productRepository.findOneBy({
-      id,
-    });
+    if (categorie) {
+      const categorieF = await this.categorieService.findOne(categorie);
+      await this.productRepository.update(id, {
+        categorie: categorieF,
+      });
+    }
+
+    return this.findOne(id);
   }
 
   async remove(id: number) {

@@ -51,20 +51,33 @@ export class ImageService {
     }
   }
 
+  async Update(
+    folder: IFolderImageOption,
+    image: number,
+    picture: CreateImageDto,
+  ) {
+    await this.remove(image);
+    return this.create(folder, picture);
+  }
+
   findAll() {
     return this.imageRepository.find();
   }
 
-  findOne(id: number) {
-    return this.imageRepository.findOneBy({
+  async findOne(id: number) {
+    const image = await this.imageRepository.findOneBy({
       id: id,
     });
+
+    if (!image) {
+      throw new HttpException('Imagen no disponible', 404);
+    }
+
+    return image;
   }
 
   async remove(id: number) {
-    const register = await this.imageRepository.findOneBy({
-      id: id,
-    });
+    const register = await this.findOne(id);
     await this.dropboxService.Delete(register.pathRemote);
     return this.imageRepository.delete({
       id: id,

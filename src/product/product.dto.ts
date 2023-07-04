@@ -1,6 +1,7 @@
 import {
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   ValidateNested,
@@ -42,4 +43,25 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber()
   state?: number;
+}
+export class FindProductFilterDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  name?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumberString()
+  'state.id'?: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumberString()
+  'categorie.id'?: number;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsNumberString()
+  id?: number;
 }
