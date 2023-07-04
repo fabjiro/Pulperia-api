@@ -8,6 +8,7 @@ import {
 import {
   CreateProductDto,
   FindProductFilterDto,
+  PaginationProductDto,
   UpdateProductDto,
 } from './product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -97,6 +98,40 @@ export class ProductService {
       }
     }
     return this.productRepository.find();
+  }
+
+  async findPagination(params: PaginationProductDto) {
+    const { page, pageSize } = params;
+    // const { name, 'categorie.id': CategorieId, 'state.id': StateId, } = filter;
+    // const where: any = {};
+
+    const options = {
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    };
+
+    // if (name) {
+    //   where.name = ILike(`%${name.toLocaleLowerCase()}%`);
+    // }
+    // if (CategorieId) {
+    //   where.categorie = {
+    //     id: CategorieId,
+    //   };
+    // }
+    // if (StateId) {
+    //   where.state = {
+    //     id: StateId,
+    //   };
+    // }
+    const [products, totalCount] = await this.productRepository.findAndCount({
+      // where: where,
+      ...options,
+    });
+
+    return {
+      products,
+      totalCount,
+    };
   }
 
   async findOne(id: number) {

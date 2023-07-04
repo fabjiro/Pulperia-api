@@ -3,11 +3,22 @@ import {
   IsNumber,
   IsNumberString,
   IsOptional,
+  IsPositive,
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { CreateImageDto } from '../image/image.dto';
+import { Type } from 'class-transformer';
+
+export class PaginationProductDto {
+  @IsNotEmpty()
+  @IsNumberString()
+  page: number;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  pageSize: number;
+}
 
 export class CreateProductDto {
   @IsNotEmpty()

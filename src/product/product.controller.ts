@@ -13,6 +13,7 @@ import { ProductService } from './product.service';
 import {
   CreateProductDto,
   FindProductFilterDto,
+  PaginationProductDto,
   UpdateProductDto,
 } from './product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -33,6 +34,11 @@ export class ProductController {
   @Get()
   findAll(@Query() filter: FindProductFilterDto) {
     return this.productService.findAll(filter);
+  }
+
+  @Get('/pagination')
+  findAllPagination(@Query() params: PaginationProductDto) {
+    return this.productService.findPagination(params);
   }
 
   @Get(':id')
